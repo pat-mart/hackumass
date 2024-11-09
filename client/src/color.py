@@ -10,6 +10,7 @@ class ColorDialog(QDialog):
         self.setWindowTitle("Edit Emotion-Color Mappings")
         self.resize(400, 300)
         self.mappings = mappings
+        self.setStyleSheet("./client/styles.css")
 
         # Layout for dialog
         layout = QVBoxLayout()
