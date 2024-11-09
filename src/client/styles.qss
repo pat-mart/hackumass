@@ -1,0 +1,21 @@
+QWidget {
+    background-color: bisque;
+}
+
+QComboBox QPushButton {
+    font-family: serif;
+    color: beige;
+    padding: 10px 20px;
+    width: 40px;
+}
+
+QComboBox {
+    background-color: beige;
+    color: black;
+    padding: 5px;
+}
+
+QComboBox QAbstractItemView {
+    color: black;
+    width: 40px;
+}
