@@ -24,13 +24,13 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -r ./src/client/requirements.txt
+          pip install -r ./client/src/requirements.txt
           pip install pyinstaller
 
       # Build the PyQt executable
       - name: Build executable
         run: |
-          pyinstaller --onefile ./src/client/main.py
+          pyinstaller --onefile ./client/src/main.py
 
       # Upload the executable as an artifact
       - name: Upload executable
