@@ -9,8 +9,8 @@ class ControlPanel(QWidget):
         super().__init__()
 
         # Set up the main window properties
-        self.setWindowTitle("Raspberry Pi Control Panel")
-        self.setGeometry(100, 100, 400, 200)
+        self.setWindowTitle("moodlight")
+        self.setGeometry(100, 100, 500, 300)
 
         # Initialize layout
         layout = QVBoxLayout()
