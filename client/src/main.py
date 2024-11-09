@@ -5,7 +5,7 @@ from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QPushButton, QCo
 from PyQt5.QtGui import QFont, QTextBlock
 from PyQt5.QtCore import Qt
 
-from client.src.color import ColorDialog, mapping_file
+from color import ColorDialog, mapping_file
 
 def load_mappings_from_file(path: str):
     # Load mappings from JSON file if it exists
@@ -72,7 +72,7 @@ class ControlPanel(QWidget):
         edit_button.clicked.connect(self.open_mapping_editor)
 
         layout.addLayout(button_box)
-        layout.addWidget(self.selected_mode_text, alignment=Qt.AlignLeft)
+        layout.addWidget(self.selected_mode_text, alignment=Qt.AlignCenter)
         layout.addWidget(self.dropdown_menu, alignment=Qt.AlignLeft)
         layout.addWidget(edit_button, alignment=Qt.AlignLeft)
 
