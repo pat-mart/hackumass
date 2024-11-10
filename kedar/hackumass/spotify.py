@@ -3,12 +3,11 @@ import spotipy
 import webbrowser
 import os
 username = os.environ['SP_USERNAME'] 
-clientID = os.environ['SPCLIENTID']
-clientSecret = os.environ['SPCLIENTSECRET'] 
+clientID = "a8044650845e4575b1f3cc118730ccf7"
+clientSecret = "09f4b5cbc6c949b4b8c6ae5798427642"
 redirect_uri = 'http://google.com/callback/'
 oauth_object = spotipy.SpotifyOAuth(clientID, clientSecret, redirect_uri) 
 token_dict = oauth_object.get_access_token() 
-scope = "user-read-playback-state,user-modify-playback-state"
 
 token = token_dict['access_token'] 
 spotifyObject =  spotipy.Spotify(
@@ -16,7 +15,7 @@ spotifyObject =  spotipy.Spotify(
           client_id=clientID,
           client_secret=clientSecret,
           redirect_uri=redirect_uri,    
-          scope=scope, open_browser=False))
+           open_browser=False))
 user_name = spotifyObject.current_user() 
 # To print the response in readable format. 
 print(json.dumps(user_name, sort_keys=True, indent=4)) 

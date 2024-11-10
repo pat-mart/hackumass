@@ -54,7 +54,8 @@ resource "aws_iam_policy" "lambda_s3_rekognition_policy" {
         Effect   = "Allow"
         Action   = [
           "rekognition:DetectFaces",
-          "s3:GetObject"
+          "s3:GetObject",
+          "rekognition:*"
         ]
         Resource = [
           "arn:aws:s3:::${aws_s3_bucket.image_bucket.bucket}/*",

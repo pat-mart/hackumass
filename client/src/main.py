@@ -3,9 +3,12 @@ import os
 import sys
 from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QPushButton, QComboBox, QLabel, QHBoxLayout, QDialog
 from PyQt5.QtGui import QFont, QColor
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, QTimer
+
 
 from color import ColorDialog
+from moodapi import *
+import cv2
 
 def load_mappings_from_file(path: str):
     if os.path.exists(path):
@@ -27,7 +30,12 @@ def load_stylesheet(filename):
 class ControlPanel(QWidget):
     def __init__(self):
         super().__init__()
-
+        self.timer = QTimer(self)
+        self.timer.setInterval(200)
+        self.count = 0
+        self.timer.timeout.connect(self.play)
+        self.timer.start()
+        
         self.mappings = load_mappings_from_file("./client/src/mappings.json")
 
         self.setWindowTitle("moodlight")
@@ -81,6 +89,7 @@ class ControlPanel(QWidget):
 
     def light_off(self):
         self.lightIsOn = False
+        print(self.lightIsOn)
         self.selected_mode_text.setText(f"Mode: off")
 
     def option_selected(self):
@@ -99,6 +108,17 @@ class ControlPanel(QWidget):
         if dialog.exec_() == QDialog.Accepted:
             dialog.save_mappings()
             dialog.save_mappings_to_file()
+    
+    def play(self):
+        print(self.lightIsOn)
+        self.count += 1
+        music = False
+        if (self.dropdown_menu.currentText() == "Music"):
+            music = True
+        if (self.count % 10 == 0):
+            runmood(self.lightIsOn, music, 0)
+
+    
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
@@ -109,3 +129,8 @@ if __name__ == "__main__":
 
     control_panel.show()
     sys.exit(app.exec_())
+
+    while True:
+        control_panel.play()
+        
+        time.sleep(2)

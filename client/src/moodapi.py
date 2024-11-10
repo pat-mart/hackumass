@@ -3,6 +3,7 @@ import json
 import time
 import spotipy 
 import os
+import cv2
 
 # AWS configuration
 REGION = "us-east-2"  # Set your region here
@@ -14,6 +15,12 @@ IMAGE_FILE_PATH = "javierreyes.png"  # Local path to the image file
 s3_client = boto3.client("s3", region_name=REGION)
 lambda_client = boto3.client("lambda", region_name=REGION)
 
+def get_image_from_pi():
+    pass
+
+def get_emotion() -> str:
+    pass
+
 def spotify(songname, override=False):
     username = os.environ['SP_USERNAME'] 
     clientID = os.environ['SPCLIENTID'] 
@@ -21,6 +28,7 @@ def spotify(songname, override=False):
     redirect_uri = 'http://google.com/callback/'
     oauth_object = spotipy.SpotifyOAuth(clientID, clientSecret, redirect_uri) 
     token_dict = oauth_object.get_access_token() 
+    # scope = "user-read-playback-state,user-modify-playback-state"
 
     token = token_dict['access_token'] 
     spotifyObject =  spotipy.Spotify(
@@ -91,46 +99,81 @@ def invoke_lambda_and_get_response(bucket, object_name):
     
     except Exception as e:
         print(f"Failed to invoke Lambda function: {e}")
-
-
-import cv2
-
-cam = cv2.VideoCapture(0)
-
-cv2.namedWindow("test")
-
-img_counter = 0
-
-while True:
-    ret, frame = cam.read()
-    if not ret:
-        print("failed to grab frame")
-        break
-    cv2.imshow("test", frame)
-
-    k = cv2.waitKey(1)
-    if k%256 == 27:
-        # ESC pressed
-        print("Escape hit, closing...")
-        break
-    elif k%256 == 32:
+def runmood(lightison, playmusic, img_counter):
+    if (lightison):
+        cam = cv2.VideoCapture(0)
+        ret, frame = cam.read()
+        if not ret:
+            print("failed to grab frame")
+            return
         # SPACE pressed
         img_name = "opencv_frame_{}.png".format(img_counter)
         cv2.imwrite(img_name, frame)
         print("{} written!".format(img_name))
         object_name = "opencv_frame_{}.png".format(img_counter)
-        songname = input("song name: ")
-        spotify(songname)
+        
         # Upload the file to S3
         upload_file_to_s3("opencv_frame_{}.png".format(img_counter), BUCKET_NAME, object_name)
 
         # Wait a bit for the S3 event notification to trigger the Lambda function
-        time.sleep(1)  # Adjust if necessary for your setup
+        # time.sleep(1)  # Adjust if necessary for your setup
 
         # Invoke Lambda and get the response
         invoke_lambda_and_get_response(BUCKET_NAME, object_name)
+        if (playmusic):
+            spotify("Humble")
         img_counter += 1
+    elif (playmusic):
+        cam = cv2.VideoCapture(0)
+        ret, frame = cam.read()
+        if not ret:
+            print("failed to grab frame")
+            return
+        # SPACE pressed
+        img_name = "opencv_frame_{}.png".format(img_counter)
+        cv2.imwrite(img_name, frame)
+        print("{} written!".format(img_name))
+        object_name = "opencv_frame_{}.png".format(img_counter)
+        
+        # Upload the file to S3
+        upload_file_to_s3("opencv_frame_{}.png".format(img_counter), BUCKET_NAME, object_name)
+        
+        # Wait a bit for the S3 event notification to trigger the Lambda function
+        # time.sleep(1)
+        spotify("Blank Space")
+        img_counter += 1
+    else:
+        img_counter += 1
+    return img_counter
+        
+    # cam = cv2.VideoCapture(0)
+    # ret, frame = cam.read()
+    # if not ret:
+    #     print("failed to grab frame")
+    #     break
+    # k = cv2.waitKey(1)
+    # if k%256 == 27:
+    #     # ESC pressed
+    #     print("Escape hit, closing...")
+    #     break
+    # elif k%256 == 32:
+    #     # SPACE pressed
+    #     img_name = "opencv_frame_{}.png".format(img_counter)
+    #     cv2.imwrite(img_name, frame)
+    #     print("{} written!".format(img_name))
+    #     object_name = "opencv_frame_{}.png".format(img_counter)
+        
+    #     # Upload the file to S3
+    #     upload_file_to_s3("opencv_frame_{}.png".format(img_counter), BUCKET_NAME, object_name)
 
-cam.release()
+    #     # Wait a bit for the S3 event notification to trigger the Lambda function
+    #     time.sleep(1)  # Adjust if necessary for your setup
 
-cv2.destroyAllWindows()
+    #     # Invoke Lambda and get the response
+    #     invoke_lambda_and_get_response(BUCKET_NAME, object_name)
+    #     songname = input("song name: ")
+    #     spotify(songname)
+    #     img_counter += 1
+
+    cam.release()
+
