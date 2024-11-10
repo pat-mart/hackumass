@@ -65,6 +65,14 @@ class ControlPanel(QWidget):
         self.selected_mode_text.setStyleSheet("padding: 0px;")
 
         self.dropdown_menu.currentIndexChanged.connect(self.option_selected)
+        
+        self.dropdown_menu2 = QComboBox(self)
+        self.dropdown_menu2.setFont(QFont("Arial", 12))
+        self.dropdown_menu2.addItems(["Regular Lights", "Sound Lights"])
+        self.dropdown_menu2.setMinimumSize(200, 10)
+        
+        self.dropdown_menu2.currentIndexChanged.connect(self.option_selected)
+
 
         # Button to open the mapping editor
         edit_button = QPushButton("Edit color mappings")
@@ -72,7 +80,10 @@ class ControlPanel(QWidget):
 
         layout.addLayout(button_box)
         layout.addWidget(self.selected_mode_text, alignment=Qt.AlignCenter)
+        layout.addWidget(self.dropdown_menu2, alignment=Qt.AlignRight)
+
         layout.addWidget(self.dropdown_menu, alignment=Qt.AlignLeft)
+        
         layout.addWidget(edit_button, alignment=Qt.AlignLeft)
 
         # Apply layout to the main window
@@ -107,10 +118,13 @@ class ControlPanel(QWidget):
         print(self.lightIsOn)
         self.count += 1
         music = False
+        soundlig = False
         if (self.dropdown_menu.currentText() == "Music" and self.count % 50 == 0):
             music = True
+        if (self.dropdown_menu2.currentText() == "Sound Lights"):
+            soundlig = True
         if (self.count % 10 == 0):
-            runmood(self.lightIsOn, music, 0, self.mappings, self.device)
+            runmood(self.lightIsOn, music, 0, self.mappings, self.device, soundlig)
 
     
 

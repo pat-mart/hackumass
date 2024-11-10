@@ -108,7 +108,7 @@ def hex_to_rgb(value):
     print("tuple", tuple(int(value[i:i+2], 16) for i in (0, 2, 4)))
     return tuple(int(value[i:i+2], 16) for i in (0, 2, 4))
 
-def runmood(lightison, playmusic, img_counter, mappings, device):
+def runmood(lightison, playmusic, img_counter, mappings, device, soundlig):
     if (lightison):
         cam = cv2.VideoCapture(0)
         ret, frame = cam.read()
@@ -157,7 +157,11 @@ def runmood(lightison, playmusic, img_counter, mappings, device):
         print(rgb, "before")
         rgb = tuple(int(r/8) for r in rgb)
         print(rgb, "rgb")
-        arduino.turnOn(device,0,30,rgb[0],rgb[1],rgb[2])
+        if not soundlig:
+            arduino.soundModeOff(device)
+            arduino.turnOn(device,0,30,rgb[0],rgb[1],rgb[2])
+        if soundlig:
+            arduino.soundModeOn(device, rgb[0], rgb[1], rgb[2])
         
         
         
