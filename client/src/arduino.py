@@ -13,7 +13,7 @@ def verify(s:serial.Serial):
         if s==None:
             print("verification failed")
             return
-        data = "0"
+        data = "0"+"\n"
         s.write(data.encode(encoding='ascii'))
         while s.in_waiting==0: pass
         if s.in_waiting>0:
@@ -22,14 +22,14 @@ def verify(s:serial.Serial):
 #write a single color to an index
 def write(serial:serial.Serial, index, r,g,b):
     try:   
-        data = "1 "+str(index)+" "+str(r)+" "+str(g)+" "+str(b)
+        data = "1 "+str(index)+" "+str(r)+" "+str(g)+" "+str(b)+"\n"
         serial.write(data.encode(encoding='ascii'))
     except:
         print("error in arduino write CMD:1") 
 #write a single color to a range of indices
 def write(serial:serial.Serial,index1,index2,r,g,b):
     try:
-        data = "2 "+str(index1)+" "+str(index2)+" "+str(r)+" "+str(g)+" "+str(b)   
+        data = "2 "+str(index1)+" "+str(index2)+" "+str(r)+" "+str(g)+" "+str(b)+"\n"
         serial.write(data.encode(encoding='ascii'))
     except:
         print("error in arduino write CMD:2") 
