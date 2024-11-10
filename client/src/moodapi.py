@@ -1,9 +1,11 @@
+import copy
 import boto3
 import json
 import time
 import spotipy 
 import os
 import cv2
+import arduino
 
 # AWS configuration
 REGION = "us-east-2"  # Set your region here
@@ -99,7 +101,13 @@ def invoke_lambda_and_get_response(bucket, object_name):
     
     except Exception as e:
         print(f"Failed to invoke Lambda function: {e}")
-def runmood(lightison, playmusic, img_counter):
+    return result
+def hex_to_rgb(value):
+    value = value.lstrip('#')
+    print("tuple", tuple(int(value[i:i+2], 16) for i in (0, 2, 4)))
+    return tuple(int(value[i:i+2], 16) for i in (0, 2, 4))
+
+def runmood(lightison, playmusic, img_counter, mappings, device):
     if (lightison):
         cam = cv2.VideoCapture(0)
         ret, frame = cam.read()
@@ -119,7 +127,35 @@ def runmood(lightison, playmusic, img_counter):
         # time.sleep(1)  # Adjust if necessary for your setup
 
         # Invoke Lambda and get the response
-        invoke_lambda_and_get_response(BUCKET_NAME, object_name)
+        res = invoke_lambda_and_get_response(BUCKET_NAME, object_name)
+        res = json.loads(res['body'])
+        print("res", res)
+        for key in res:
+            # print("key", key, res[key])
+            res[key] = float(res[key]) / 100.0
+        rgb = (0,0,0)
+        print("mappings", mappings)
+        newmappings = copy.deepcopy(mappings)
+        rgbVals = dict()
+        for key in newmappings:
+            print("key", newmappings[key])
+            print("newmappings", newmappings)
+
+            rgbVals[key] = hex_to_rgb(newmappings[key])
+            print("rgbVal1s", rgbVals)
+            rgbVals[key] = tuple((rgbVals[key][i] * res[key]) for i in range(3))
+            print("rgbVawl1s", rgbVals)
+
+            rgb = tuple((rgb[i] + rgbVals[key][i]) for i in range(3))
+            
+            # print("mappings", newmappings)
+        print(rgb, "before")
+        rgb = tuple(int(r/8) for r in rgb)
+        print(rgb, "rgb")
+        arduino.turnOn(device,0,30,rgb[0],rgb[1],rgb[2])
+        
+        
+        
         if (playmusic):
             spotify("Humble")
         img_counter += 1

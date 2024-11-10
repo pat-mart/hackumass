@@ -4,7 +4,7 @@ import sys
 from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QPushButton, QComboBox, QLabel, QHBoxLayout, QDialog
 from PyQt5.QtGui import QFont, QColor
 from PyQt5.QtCore import Qt, QTimer
-
+import arduino
 
 from color import ColorDialog
 from moodapi import *
@@ -14,13 +14,7 @@ def load_mappings_from_file(path: str):
     if os.path.exists(path):
         with open(path, "r") as file:
             return json.loads(file.read())
-    else:
-        return {
-            "Happy": "Yellow",
-            "Sad": "Blue",
-            "Angry": "Red",
-            "Calm": "Green"
-        }
+   
 
 def load_stylesheet(filename):
     with open(filename, "r") as file:
@@ -40,6 +34,7 @@ class ControlPanel(QWidget):
 
         self.setWindowTitle("moodlight")
         self.setGeometry(100, 100, 1000, 350)
+        self.device = arduino.init_connection("/dev/ttyACM0")
         layout = QVBoxLayout()
 
         self.lightIsOn = False
@@ -116,7 +111,7 @@ class ControlPanel(QWidget):
         if (self.dropdown_menu.currentText() == "Music"):
             music = True
         if (self.count % 10 == 0):
-            runmood(self.lightIsOn, music, 0)
+            runmood(self.lightIsOn, music, 0, self.mappings, self.device)
 
     
 
@@ -128,9 +123,13 @@ if __name__ == "__main__":
     app.setStyleSheet(stylesheet)
 
     control_panel.show()
+    
+    
+    
+    
+    
     sys.exit(app.exec_())
 
     while True:
         control_panel.play()
-        
         time.sleep(2)
