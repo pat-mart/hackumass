@@ -2,13 +2,12 @@ import json
 import os
 import sys
 from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QPushButton, QComboBox, QLabel, QHBoxLayout, QDialog
-from PyQt5.QtGui import QFont, QTextBlock
+from PyQt5.QtGui import QFont, QColor
 from PyQt5.QtCore import Qt
 
-from color import ColorDialog, mapping_file
+from color import ColorDialog
 
 def load_mappings_from_file(path: str):
-    # Load mappings from JSON file if it exists
     if os.path.exists(path):
         with open(path, "r") as file:
             return json.loads(file.read())
@@ -31,11 +30,8 @@ class ControlPanel(QWidget):
 
         self.mappings = load_mappings_from_file("./client/src/mappings.json")
 
-        # Set up the main window properties
         self.setWindowTitle("moodlight")
         self.setGeometry(100, 100, 500, 300)
-
-        # Initialize layout
         layout = QVBoxLayout()
 
         self.lightIsOn = False
@@ -60,7 +56,7 @@ class ControlPanel(QWidget):
         self.dropdown_menu.addItems(["Detect mood", "Music"])
         self.dropdown_menu.setMinimumSize(200, 10)
 
-        # Text for mode (mood detect/music)
+        # Text for mode
         self.selected_mode_text = QLabel(f"Mode: off")
         self.selected_mode_text.setFont(QFont("Arial", 14, QFont.Bold))
         self.selected_mode_text.setStyleSheet("padding: 0px;")
@@ -78,9 +74,6 @@ class ControlPanel(QWidget):
 
         # Apply layout to the main window
         self.setLayout(layout)
-
-    def reload_state(self):
-        pass
 
     def light_on(self):
         self.lightIsOn = True

@@ -1,0 +1,10 @@
+{
+    "CALM": "#AAAAFF",
+    "CONFUSED": "#FFFF00",
+    "HAPPY": "#FF0000",
+    "ANGRY": "#00FF00",
+    "SURPRISED": "#333335",
+    "DISGUSTED": "#FFFF00",
+    "SAD": "#FF0000",
+    "FEAR": "#FF00FF"
+}

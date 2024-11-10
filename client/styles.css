@@ -14,10 +14,11 @@ QWidget QPushButton {
     border-radius: 10px;
 }
 
-QWidget QPushButton:pressed {
+QWidget QPushButton {
     font-family: serif;
     background-color: rgb(172, 218, 218);
-    color: rgb(40, 198, 193);
+    color: black;
+    font-weight: bold;
     padding: 5px 20px;
     width: 370px;
     border-color:rgb(42, 95, 165);
@@ -27,16 +28,33 @@ QWidget QPushButton:pressed {
 }
 
 QWidget QLabel {
-    font-family: Arial;
+    font-family: Arial, serif;
     font-size: 100px;
     color: rgb(35, 30, 195);
-
 }
 
-
-
-QComboBox QAbstractItemView {
+QTable {
     color: black;
+}
+
+QAbstractTableModel {
+    color: black;
+}
+
+QTableWidget {
+    color: black;
+    font-weight: normal;
+}
+
+QTableWidgetItem {
+    color: black;
+}
+
+QComboBox {
+    padding-top: 2px;
+    padding-bottom: 2px;
+    color: black;
+    font-weight: bold;
+    background-color: rgb(162, 208, 208);
     width: 40px;
 }
-

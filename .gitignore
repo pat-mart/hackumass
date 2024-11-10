@@ -166,3 +166,4 @@ cython_debug/
 #.idea/
 
 /client/.secrets
+!/client/src/mappings.json

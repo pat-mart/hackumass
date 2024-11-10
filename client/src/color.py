@@ -6,6 +6,33 @@ from PyQt5.QtWidgets import QDialog, QTableWidgetItem, QHBoxLayout, QPushButton,
 
 mapping_file = "./client/src/mappings.json"
 
+emotions = ["CALM", "CONFUSED", "HAPPY", "ANGRY", "SURPRISED", "DISGUSTED", "SAD", "FEAR"]
+
+
+def cubic_interpolate(y0, y1, y2, y3, t):
+    a = (-y0 + 3 * y1 - 3 * y2 + y3) / 2
+    b = (y0 - 5 * y1 + 4 * y2 - y3) / 2
+    c = (-y0 + y2) / 2
+    d = y1
+
+    return a * t ** 3 + b * t ** 2 + c * t + d
+
+def transition_colors_cubic(color_start, color_end, duration=1.0, fps=60):
+    frames = int(duration * fps)
+    r1, g1, b1 = color_start
+    r2, g2, b2 = color_end
+
+    interpolated_colors = []
+    for i in range(frames):
+        t = i / (frames - 1)
+        r = round(cubic_interpolate(r1, r1, r2, r2, t))
+        g = round(cubic_interpolate(g1, g1, g2, g2, t))
+        b = round(cubic_interpolate(b1, b1, b2, b2, t))
+        interpolated_colors.append((r, g, b))
+
+    return interpolated_colors
+
+
 class ColorDialog(QDialog):
     def __init__(self, mappings):
         super().__init__()
@@ -20,6 +47,7 @@ class ColorDialog(QDialog):
         # Create a table for emotion-color mappings
         self.table = QTableWidget(len(self.mappings), 2)
         self.table.setHorizontalHeaderLabels(["Emotion", "Color"])
+        self.table.setStyleSheet("color: black;")
         self.table.horizontalHeader().setStretchLastSection(True)
 
         self.valid_hex_regex = re.compile("^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$")
