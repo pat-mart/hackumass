@@ -56,7 +56,7 @@ class ControlPanel(QWidget):
         # Dropdown menu with options
         self.dropdown_menu = QComboBox(self)
         self.dropdown_menu.setFont(QFont("Arial", 12))
-        self.dropdown_menu.addItems(["Detect mood", "Music"])
+        self.dropdown_menu.addItems(["No Music", "Music"])
         self.dropdown_menu.setMinimumSize(200, 10)
 
         # Text for mode
@@ -84,7 +84,6 @@ class ControlPanel(QWidget):
 
     def light_off(self):
         self.lightIsOn = False
-        print(self.lightIsOn)
         self.selected_mode_text.setText(f"Mode: off")
 
     def option_selected(self):
@@ -108,7 +107,7 @@ class ControlPanel(QWidget):
         print(self.lightIsOn)
         self.count += 1
         music = False
-        if (self.dropdown_menu.currentText() == "Music"):
+        if (self.dropdown_menu.currentText() == "Music" and self.count % 50 == 0):
             music = True
         if (self.count % 10 == 0):
             runmood(self.lightIsOn, music, 0, self.mappings, self.device)

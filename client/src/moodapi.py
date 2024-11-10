@@ -53,6 +53,7 @@ def spotify(songname, override=False):
     print(songname.lower(), spotifyObject.currently_playing().get('item').get('name').split(':')[-1].lower())
     if songsplit != urisplit and songname.lower() != spotifyObject.currently_playing().get('item').get('name').split(':')[-1].lower().strip(): #doesnt start replaying the same song if it is already playing
         spotifyObject.start_playback(uris=[song])
+        spotifyObject.repeat('track')
 
 
 def upload_file_to_s3(file_path, bucket, object_name):
@@ -128,6 +129,8 @@ def runmood(lightison, playmusic, img_counter, mappings, device):
 
         # Invoke Lambda and get the response
         res = invoke_lambda_and_get_response(BUCKET_NAME, object_name)
+        if not res:
+            return img_counter
         res = json.loads(res['body'])
         print("res", res)
         for key in res:
@@ -152,12 +155,28 @@ def runmood(lightison, playmusic, img_counter, mappings, device):
         print(rgb, "before")
         rgb = tuple(int(r/8) for r in rgb)
         print(rgb, "rgb")
-        arduino.turnOn(device,0,30,rgb[0],rgb[1],rgb[2])
+        # arduino.turnOn(device,0,30,rgb[0],rgb[1],rgb[2])
         
         
         
         if (playmusic):
-            spotify("Humble")
+            maxkey = max(res, key=res.get)
+            if maxkey == "CALM":
+                spotify("Clair de Lune")
+            elif maxkey == "HAPPY":
+                spotify("Best Day of My Life")
+            elif maxkey == "SAD":
+                spotify("Here Comes the Sun")
+            elif maxkey == "ANGRY":
+                spotify("Sweden")
+            elif maxkey == "SURPRISED":
+                spotify("Mr. Brightside")
+            elif maxkey == "DISGUSTED":
+                spotify("Disgusted")
+            elif maxkey == "FEAR":
+                spotify("Canon in D")
+            else:
+                spotify("Lucy in the Sky with Diamonds") #confused
         img_counter += 1
     elif (playmusic):
         cam = cv2.VideoCapture(0)
@@ -175,8 +194,31 @@ def runmood(lightison, playmusic, img_counter, mappings, device):
         upload_file_to_s3("opencv_frame_{}.png".format(img_counter), BUCKET_NAME, object_name)
         
         # Wait a bit for the S3 event notification to trigger the Lambda function
+        res = invoke_lambda_and_get_response(BUCKET_NAME, object_name)
+        res = json.loads(res['body'])
+        print("res", res)
+        if not res:
+            return img_counter
+        #get the key of the max value in res:
+        maxkey = max(res, key=res.get)
+        if maxkey == "CALM":
+            spotify("Clair de Lune")
+        elif maxkey == "HAPPY":
+            spotify("Best Day of My Life")
+        elif maxkey == "SAD":
+            spotify("Here Comes the Sun")
+        elif maxkey == "ANGRY":
+            spotify("Sweden")
+        elif maxkey == "SURPRISED":
+            spotify("Mr. Brightside")
+        elif maxkey == "DISGUSTED":
+            spotify("Disgusted")
+        elif maxkey == "FEAR":
+            spotify("Canon in D")
+        else:
+            spotify("Lucy In The Sky With Diamonds") #confused
+        
         # time.sleep(1)
-        spotify("Blank Space")
         img_counter += 1
     else:
         img_counter += 1
