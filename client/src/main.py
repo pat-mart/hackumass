@@ -31,7 +31,7 @@ class ControlPanel(QWidget):
         self.mappings = load_mappings_from_file("./client/src/mappings.json")
 
         self.setWindowTitle("moodlight")
-        self.setGeometry(100, 100, 500, 300)
+        self.setGeometry(100, 100, 1000, 350)
         layout = QVBoxLayout()
 
         self.lightIsOn = False
@@ -47,8 +47,8 @@ class ControlPanel(QWidget):
         stop_button.clicked.connect(self.light_off)
 
         button_box = QHBoxLayout()
-        button_box.addWidget(start_button, alignment=Qt.AlignJustify)
-        button_box.addWidget(stop_button, alignment=Qt.AlignJustify)
+        button_box.addWidget(start_button, alignment=Qt.AlignLeft)
+        button_box.addWidget(stop_button, alignment=Qt.AlignRight)
 
         # Dropdown menu with options
         self.dropdown_menu = QComboBox(self)
