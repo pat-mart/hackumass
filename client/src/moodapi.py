@@ -132,6 +132,8 @@ def runmood(lightison, playmusic, img_counter, mappings, device):
         if not res:
             return img_counter
         res = json.loads(res['body'])
+        if not res:
+            return img_counter
         print("res", res)
         for key in res:
             # print("key", key, res[key])
@@ -155,7 +157,7 @@ def runmood(lightison, playmusic, img_counter, mappings, device):
         print(rgb, "before")
         rgb = tuple(int(r/8) for r in rgb)
         print(rgb, "rgb")
-        # arduino.turnOn(device,0,30,rgb[0],rgb[1],rgb[2])
+        arduino.turnOn(device,0,30,rgb[0],rgb[1],rgb[2])
         
         
         
