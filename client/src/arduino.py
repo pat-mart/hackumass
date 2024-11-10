@@ -38,3 +38,18 @@ def turnOff(serial:serial.Serial,index1,index2):
         serial.write(data.encode(encoding='ascii'))
     except:
         print("error in arduino write CMD:turnOff")
+
+#turn on sound based LED response
+def soundModeOn(serial:serial.Serial, r, g, b):
+    try:
+        data = "2 "+str(r)+" "+str(g)+" "+str(b)+"\n"
+        serial.write(data.encode(encoding='ascii'))
+    except:
+        print("error in arduino write CMD:soundModeOn")
+
+def soundModeOff(serial:serial.Serial):
+    try:
+        data = "3 0 \n"
+        serial.write(data.encode(encoding='ascii'))
+    except:
+        print("error in arduino write CMD:soundModeOff")  

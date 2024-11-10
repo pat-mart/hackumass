@@ -120,7 +120,6 @@ if __name__ == "__main__":
 
     stylesheet = load_stylesheet("./client/styles.css")
     app.setStyleSheet(stylesheet)
-
     control_panel.show()
     
     

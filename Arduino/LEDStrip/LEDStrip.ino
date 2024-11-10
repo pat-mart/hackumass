@@ -16,6 +16,7 @@ int rgb[] = {0,0,0};
 float dt;
 float elapsed;
 float pt = 0.0;
+bool soundMode = false;
 
 void cubicInterpolate(float dt);
 
@@ -53,15 +54,25 @@ void loop() {
         s[1] = rgb[1];
         s[2] = rgb[2];
         elapsed = 0;
+    } 
+    else if(cmd[0] == 2){
+        soundMode = true;
+    }
+    else if(cmd[0] == 3){
+      soundMode = false;
     }
     Serial.flush();
   }
-  cubicInterpolate(dt);
-  for(int i = 0;i<numLeds;i++){
-    leds[i] = CRGB(rgb[0], rgb[1], rgb[2]);
+  if(!soundMode){
+    cubicInterpolate(dt);
+    for(int i = 0;i<numLeds;i++){
+      leds[i] = CRGB(rgb[0], rgb[1], rgb[2]);
+    }
+    FastLED.show();
+    delay(50);
+  } else {
+    soundResponseMode(cmd[1], cmd[2], cmd[3]);
   }
-  FastLED.show();
-  delay(50);
   
 }
 
@@ -75,4 +86,32 @@ void cubicInterpolate(float dt){
   rgb[1] = (int)(s[1]+delta[1]*factor);
   rgb[2] = (int)(s[2]+delta[2]*factor);   
   
+}
+
+void soundResponseMode(int r, int g, int b){
+  int level = analogRead(A0);
+  if(level >= 500){
+    int num;
+    if(level - 500 <= 117){
+      num = ((level - 500) / 3);
+    } else {
+      num = 39;
+    }
+    for(int i = 0; i < num; i++){
+      leds[i] = CRGB(r, g, b);
+      FastLED.show();
+      delay(10);
+    }
+    delay(10);
+    for(int i = num-1; i >= 0; i--){
+      leds[i] = CRGB(0, 0, 0);
+      FastLED.show();
+      delay(10);
+    }
+  } else {
+    for(int i = 0; i < numLeds; i++){
+      leds[i] = CRGB(0, 0, 0);
+    }
+    FastLED.show();
+  }
 }
